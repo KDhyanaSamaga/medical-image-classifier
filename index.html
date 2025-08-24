@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Medical Image Classifier</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin-top: 50px;
+    }
+    .container {
+      width: 400px;
+      margin: auto;
+      padding: 20px;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      box-shadow: 2px 2px 12px rgba(0,0,0,0.1);
+    }
+    input[type=file] {
+      margin: 20px 0;
+    }
+    button {
+      padding: 10px 20px;
+      border: none;
+      background: #007bff;
+      color: white;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #0056b3;
+    }
+    #result {
+      margin-top: 20px;
+      font-size: 18px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>🩺 Medical Image Classifier</h2>
+    <input type="file" id="imageInput" accept="image/*">
+    <button onclick="uploadImage()">Predict</button>
+    <h3 id="result"></h3>
+  </div>
+
+  <script>
+    async function uploadImage() {
+      const input = document.getElementById("imageInput");
+      if (!input.files[0]) {
+        alert("Please select an image!");
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append("file", input.files[0]);
+
+      const response = await fetch("/predict", {
+        method: "POST",
+        body: formData
+      });
+
+      const data = await response.json();
+      if (data.prediction) {
+        document.getElementById("result").innerText = "Prediction: " + data.prediction;
+      } else {
+        document.getElementById("result").innerText = "Error: " + data.error;
+      }
+    }
+  </script>
+</body>
+</html>
